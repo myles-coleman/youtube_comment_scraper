@@ -13,6 +13,7 @@ app.get('/', (req, res) => {
 
 //GET Comment Threads
 app.get('/videos/:videoId', async (req, res) => {
+
     const { videoId } = req.params;
     const baseUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=replies&textFormat=plainText&maxResults=100&order=relevance&videoId=${videoId}&key=${apiKey}`;
 
@@ -26,10 +27,26 @@ app.get('/videos/:videoId', async (req, res) => {
 })
 
 //GET Comment Replies
-app.get('/videos/:videoId/comments', async (req, res) => {
-    const { videoId } = req.params;
-    const comment  = "UgwvHwmg3QjMR_xlt3x4AaABAg"; // this should be changed depending on the comment i want to look in to
-    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&parentId=${comment}&maxResults=100&key=${apiKey}`;
+//the comments read bottom up. To read a chain from start to finish, it will likely be necessary to use the next page token to start
+app.get('/videos/:videoId/:commentId', async (req, res) => {
+
+    const { videoId } = req.params.videoId;
+    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&parentId=${req.params.commentId}&maxResults=100&key=${apiKey}`;
+
+    try {
+        const response = await request(`${baseUrl}&url=https://www.youtube.com/watch?v=${videoId}`);
+        res.json(JSON.parse(response));
+
+    } catch (error) {
+        res.json(error);
+    }
+})
+
+//GET Comment Replies (change page)
+app.get('/videos/:videoId/:commentId/:pageToken', async (req, res) => {
+
+    const { videoId } = req.params.videoId;
+    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&pageToken=${req.params.pageToken}&parentId=${req.params.commentId}&maxResults=100&key=${apiKey}`;
 
     try {
         const response = await request(`${baseUrl}&url=https://www.youtube.com/watch?v=${videoId}`);
