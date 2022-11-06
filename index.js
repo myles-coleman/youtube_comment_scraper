@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 //GET Comment Threads
 app.get('/videos/:videoId', async (req, res) => {
 
-    const { videoId } = req.params;
+    const videoId = req.params;
     const baseUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=replies&textFormat=plainText&maxResults=100&order=relevance&videoId=${videoId}&key=${apiKey}`;
 
     try {
@@ -30,8 +30,9 @@ app.get('/videos/:videoId', async (req, res) => {
 //the comments read bottom up. To read a chain from start to finish, it will likely be necessary to use the next page token to start
 app.get('/videos/:videoId/:commentId', async (req, res) => {
 
-    const { videoId } = req.params.videoId;
-    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&parentId=${req.params.commentId}&maxResults=100&key=${apiKey}`;
+    const videoId  = req.params.videoId;
+    const commentId = req.params.commentId;
+    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&parentId=${commentId}&maxResults=100&key=${apiKey}`;
 
     try {
         const response = await request(`${baseUrl}&url=https://www.youtube.com/watch?v=${videoId}`);
@@ -45,8 +46,10 @@ app.get('/videos/:videoId/:commentId', async (req, res) => {
 //GET Comment Replies (change page)
 app.get('/videos/:videoId/:commentId/:pageToken', async (req, res) => {
 
-    const { videoId } = req.params.videoId;
-    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&pageToken=${req.params.pageToken}&parentId=${req.params.commentId}&maxResults=100&key=${apiKey}`;
+    const videoId = req.params.videoId;
+    const commentId = req.params.commentId;
+    const pageToken = req.params.pageToken;
+    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&pageToken=${pageToken}&parentId=${commentId}&maxResults=100&key=${apiKey}`;
 
     try {
         const response = await request(`${baseUrl}&url=https://www.youtube.com/watch?v=${videoId}`);
