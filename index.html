@@ -5,16 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Youtube Comment Scraper</title>
-    <link rel="icon" type="image/x-icon" href="/images/cow_icon.ico">
+    <link rel="icon" type="image/x-icon" href="./images/cow_icon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <script src="./index.js" defer></script>
 </head>
 <body>
 
     <div class="card">
+        <div class="info">
+            <h2>Paste a youtube link with the format: </h2>
+            <h4>https://www.youtube.com/watch?v=[videoId]&lc=[commentId]</h4>
+            <h2>Example: </h2>
+            <h4>https://www.youtube.com/watch?v=FoTYV22qZTg&lc=UgwzKQOQMJnG1PyDSit4AaABAg</h4>
+            <h3>You can get the comment id in the link by clicking the time the comment was posted. (to the right of the username)</h3>
+        </div>
         <div class="search">
             <input type="text" class="search-bar" placeholder="Paste Link">
             <button>
@@ -22,6 +29,7 @@
             </button>
         </div>
     </div>
+    <svg class="svg" stroke="currentColor" fill="white" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M20,8h-5.612l1.123-3.367c0.202-0.608,0.1-1.282-0.275-1.802S14.253,2,13.612,2H12c-0.297,0-0.578,0.132-0.769,0.36 L6.531,8H4c-1.103,0-2,0.897-2,2v9c0,1.103,0.897,2,2,2h3h10.307c0.829,0,1.581-0.521,1.873-1.298l2.757-7.351 C21.979,12.239,22,12.12,22,12v-2C22,8.897,21.103,8,20,8z M4,10h2v9H4V10z M20,11.819L17.307,19H8V9.362L12.468,4l1.146,0 l-1.562,4.683c-0.103,0.305-0.051,0.64,0.137,0.901C12.377,9.846,12.679,10,13,10h7V11.819z"></path></svg>
     
 </body>
 </html>

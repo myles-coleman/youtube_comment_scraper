@@ -1,5 +1,4 @@
 const apiKey = 'AIzaSyA7QQAO1InkKyB35IJ-XAKLoBMesPMdXwQ';
-
 //maybe eventually implement next page function
 let pageToken = '';
 
@@ -28,18 +27,53 @@ let comments = {
         })
     },
     displayComments: function (data) {
-
         //gives token for next page
         const { nextPageToken } = data;
         //gives array of comments
         const { items } = data
+
+        let svg = document.querySelector(".svg")
+        svg.style.display = 'inline-block';
+
         //grabs info from comments 
-        for (let i = 0; i < items.length; i++) {
+        for (let i = 0; i < 1; i++) {
             let { snippet } = items[i];
             let { authorDisplayName } = snippet;
             let { likeCount} = snippet;
             let { textOriginal } = snippet;
             console.log(authorDisplayName, textOriginal, likeCount);
+
+            document.body.removeChild(document.querySelector(".card"));
+
+            let card = document.createElement("div");
+            card.setAttribute("class", "card");
+
+            let icon = document.createElement("div");
+            icon.setAttribute("class", "icon");
+
+            let username = document.createElement("h2");
+            username.setAttribute("class", "username");
+            username.innerHTML += authorDisplayName;
+
+            let text = document.createElement("h4");
+            text.setAttribute("class", "text");
+            text.innerHTML += textOriginal;
+
+            let likes = document.createElement("div");
+            likes.setAttribute("class", "likes");
+            
+            let likeNum = document.createElement("h5");
+            likeNum.innerHTML += likeCount;
+
+
+            likes.appendChild(svg);
+            likes.appendChild(likeNum);
+
+            card.appendChild(icon);
+            card.appendChild(username);
+            card.appendChild(text);
+            card.appendChild(likes);
+            document.body.appendChild(card);
         };
     },
     search: function () {
@@ -87,7 +121,3 @@ document.querySelector(".search-bar").addEventListener("keyup", (event) => {
         comments.fetchComments(getvideoId(comments.search()), getCommentId(comments.search()));
     }
 });
-
-//link format
-//https://www.youtube.com/watch?v=lpzVc7s-_e8&lc=Ugwvi1Qq6Xq_4GfU-W54AaABAg
-//https://www.youtube.com/watch?v=WZNG8UomjSI&lc=UgxAd-Gkmcjg6wU6xQ54AaABAg
