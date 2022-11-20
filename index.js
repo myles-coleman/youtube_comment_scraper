@@ -1,63 +1,93 @@
-const express = require('express');
-const request = require('request-promise');
-
-const app = express();
-const PORT = process.env.PORT || 5000;
 const apiKey = 'AIzaSyA7QQAO1InkKyB35IJ-XAKLoBMesPMdXwQ';
 
-app.use(express.json());
+//maybe eventually implement next page function
+let pageToken = '';
 
-app.get('/', (req, res) => {
-    res.send('Welcome to Youtube Scraper API.')
+let comments = {
+    fetchComments: function (videoId, commentId) {
+        fetch(
+            'https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&parentId='+ 
+            commentId + '&maxResults=100&pageToken=' + 
+            pageToken + '&key='+ 
+            apiKey + '&url=https://www.youtube.com/watch?v='+ 
+            videoId
+        )
+        .then((response) => {
+            if (!response.ok) {
+                alert("Invalid Link.");
+                throw Error("Invalid Link.");
+            }
+            return response.json();
+        })
+        .then((data) =>  {
+            if (data.items.length === 0) {
+                alert("Invalid Link.");
+                throw Error("Invalid Link.");
+            } 
+            this.displayComments(data);            
+        })
+    },
+    displayComments: function (data) {
+
+        //gives token for next page
+        const { nextPageToken } = data;
+        //gives array of comments
+        const { items } = data
+        //grabs info from comments 
+        for (let i = 0; i < items.length; i++) {
+            let { snippet } = items[i];
+            let { authorDisplayName } = snippet;
+            let { likeCount} = snippet;
+            let { textOriginal } = snippet;
+            console.log(authorDisplayName, textOriginal, likeCount);
+        };
+    },
+    search: function () {
+        return document.querySelector(".search-bar").value;
+    }
+}
+
+const getvideoId = (videoLink) => {
+    let videoId = '';
+    let videoIdCounter = 0;
+    const videoIdLength = 11;
+    for (let i = 0; i < videoLink.length; i++) {
+        if (i === 32) {// 32 is the position where the videoId starts
+            while (videoIdCounter < videoIdLength) {
+                videoId += videoLink[i + videoIdCounter];
+                videoIdCounter++;
+            }
+        }
+    }
+    return videoId;
+}
+
+const getCommentId = (videoLink) => {
+    let commentId = '';
+    let commentIdCounter = 0;
+    const commentIdLength = 26;
+    for (let i = 0; i < videoLink.length; i++) {
+        if ( i === 47)  {// 47 is the position where the commentId starts
+            while (commentIdCounter < commentIdLength) {
+                commentId += videoLink[i + commentIdCounter];
+                commentIdCounter++;
+            }
+        }
+    }
+    return commentId;
+}
+
+document.querySelector(".search button").addEventListener("click", () => {
+    console.log()
+    comments.fetchComments(getvideoId(comments.search()), getCommentId(comments.search()));
 });
 
-//GET Comment Threads
-app.get('/videos/:videoId', async (req, res) => {
-
-    const videoId = req.params;
-    const baseUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=replies&textFormat=plainText&maxResults=100&order=relevance&videoId=${videoId}&key=${apiKey}`;
-
-    try {
-        const response = await request(`${baseUrl}&url=https://www.youtube.com/watch?v=${videoId}`);
-        res.json(JSON.parse(response));
-
-    } catch (error) {
-        res.json(error);
+document.querySelector(".search-bar").addEventListener("keyup", (event) => {
+    if (event.key === 'Enter') {
+        comments.fetchComments(getvideoId(comments.search()), getCommentId(comments.search()));
     }
-})
+});
 
-//GET Comment Replies
-//the comments read bottom up. To read a chain from start to finish, it will likely be necessary to use the next page token to start
-app.get('/videos/:videoId/:commentId', async (req, res) => {
-
-    const videoId  = req.params.videoId;
-    const commentId = req.params.commentId;
-    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&parentId=${commentId}&maxResults=100&key=${apiKey}`;
-
-    try {
-        const response = await request(`${baseUrl}&url=https://www.youtube.com/watch?v=${videoId}`);
-        res.json(JSON.parse(response));
-
-    } catch (error) {
-        res.json(error);
-    }
-})
-
-//GET Comment Replies (change page)
-app.get('/videos/:videoId/:commentId/:pageToken', async (req, res) => {
-
-    const videoId = req.params.videoId;
-    const commentId = req.params.commentId;
-    const pageToken = req.params.pageToken;
-    const baseUrl = `https://youtube.googleapis.com/youtube/v3/comments?part=snippet&textFormat=plainText&pageToken=${pageToken}&parentId=${commentId}&maxResults=100&key=${apiKey}`;
-
-    try {
-        const response = await request(`${baseUrl}&url=https://www.youtube.com/watch?v=${videoId}`);
-        res.json(JSON.parse(response));
-
-    } catch (error) {
-        res.json(error);
-    }
-})
-
-app.listen(PORT, () => {console.log(`Server is up and running at http://localhost:${PORT}`)});
+//link format
+//https://www.youtube.com/watch?v=lpzVc7s-_e8&lc=Ugwvi1Qq6Xq_4GfU-W54AaABAg
+//https://www.youtube.com/watch?v=WZNG8UomjSI&lc=UgxAd-Gkmcjg6wU6xQ54AaABAg
