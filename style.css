@@ -4,10 +4,11 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-  }
+}
 
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -77,19 +78,20 @@ input.search-bar {
 
 .text {
     margin-top: auto;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .likes {
-    height: 25px;
-    width: 25px;
-    margin-left: 120px;
+    display: inline-flex;  
+    margin-left: -5px;
 }
 
-.likes h5 {
-    display: inline-block;
+.likes h6 {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .svg {
     display: none;
+    padding: 5px;
 }

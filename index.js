@@ -32,54 +32,62 @@ let comments = {
         //gives array of comments
         const { items } = data
 
+        document.body.removeChild(document.querySelector(".card"));
+
         let svg = document.querySelector(".svg")
         svg.style.display = 'inline-block';
+        let card = document.createElement("div");
+        card.setAttribute("class", "card");
+        let icon = document.createElement("div");
+        icon.setAttribute("class", "icon");
+        let username = document.createElement("h2");
+        username.setAttribute("class", "username");
+        let text = document.createElement("h4");
+        text.setAttribute("class", "text");
+        let likes = document.createElement("div");
+        likes.setAttribute("class", "likes");
+        likes.appendChild(svg);
+
+        let likeNum = document.createElement("h6");
 
         //grabs info from comments 
-        for (let i = 0; i < 1; i++) {
-            let { snippet } = items[i];
+        for (let i = items.length; i > 0; i--) {
+            let { snippet } = items[i-1];
             let { authorDisplayName } = snippet;
             let { likeCount} = snippet;
             let { textOriginal } = snippet;
             console.log(authorDisplayName, textOriginal, likeCount);
 
-            document.body.removeChild(document.querySelector(".card"));
+            username.innerHTML = authorDisplayName;
+            text.innerHTML = textOriginal;
+            likeNum.innerHTML = likeCount;    
 
-            let card = document.createElement("div");
-            card.setAttribute("class", "card");
+            let likeNumClone = likeNum.cloneNode(true);
+            likes.appendChild(likeNumClone);
+            let iconClone = icon.cloneNode(true);
+            card.appendChild(iconClone);
+            let usernameClone = username.cloneNode(true);
+            card.appendChild(usernameClone);
+            let textClone = text.cloneNode(true);
+            card.appendChild(textClone);
+            let likesClone = likes.cloneNode(true);
+            card.appendChild(likesClone);
+            let cardClone = card.cloneNode(true);
+            document.body.appendChild(cardClone);
 
-            let icon = document.createElement("div");
-            icon.setAttribute("class", "icon");
-
-            let username = document.createElement("h2");
-            username.setAttribute("class", "username");
-            username.innerHTML += authorDisplayName;
-
-            let text = document.createElement("h4");
-            text.setAttribute("class", "text");
-            text.innerHTML += textOriginal;
-
-            let likes = document.createElement("div");
-            likes.setAttribute("class", "likes");
-            
-            let likeNum = document.createElement("h5");
-            likeNum.innerHTML += likeCount;
-
-
-            likes.appendChild(svg);
-            likes.appendChild(likeNum);
-
-            card.appendChild(icon);
-            card.appendChild(username);
-            card.appendChild(text);
-            card.appendChild(likes);
-            document.body.appendChild(card);
+            likes.removeChild(likeNumClone);
+            card.removeChild(likesClone);
+            card.removeChild(textClone);
+            card.removeChild(usernameClone);
+            card.removeChild(iconClone);
         };
     },
     search: function () {
         return document.querySelector(".search-bar").value;
     }
 }
+
+//need to put both text and likes in their own div
 
 const getvideoId = (videoLink) => {
     let videoId = '';
