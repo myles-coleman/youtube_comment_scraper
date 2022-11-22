@@ -60,7 +60,7 @@ let comments = {
         
 
         //grabs info from comments 
-        for (let i = items.length - 1; i > 0; i--) {
+        for (let i = items.length - 1; i >= 0; i--) {
             let { snippet } = items[i];
             let { id } = items[i]; 
             let itemId = getItemId(id);
