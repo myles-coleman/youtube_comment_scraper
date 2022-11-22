@@ -1,5 +1,7 @@
 const apiKey = 'AIzaSyA7QQAO1InkKyB35IJ-XAKLoBMesPMdXwQ';
 //maybe eventually implement next page function
+//i can implement it as a "next page" button at the top of the page (or as a nav header)
+// that is grayed out unless there are more than 100 objects in the items[]
 let pageToken = '';
 
 let comments = {
@@ -27,13 +29,16 @@ let comments = {
         })
     },
     displayComments: function (data) {
+
+        let itemIdArr = [];
+        let counter = 0;
+
         //gives token for next page
         const { nextPageToken } = data;
         //gives array of comments
         const { items } = data
 
         document.body.removeChild(document.querySelector(".card"));
-
         let svg = document.querySelector(".svg")
         svg.style.display = 'inline-block';
         let card = document.createElement("div");
@@ -47,39 +52,56 @@ let comments = {
         let likes = document.createElement("div");
         likes.setAttribute("class", "likes");
         likes.appendChild(svg);
-
+        let content = document.createElement("div");
+        content.setAttribute("class", "content");
         let likeNum = document.createElement("h6");
 
+        
+        
+
         //grabs info from comments 
-        for (let i = items.length; i > 0; i--) {
-            let { snippet } = items[i-1];
+        for (let i = items.length - 1; i > 0; i--) {
+            let { snippet } = items[i];
+            let { id } = items[i]; 
+            let itemId = getItemId(id);
             let { authorDisplayName } = snippet;
             let { likeCount} = snippet;
             let { textOriginal } = snippet;
-            console.log(authorDisplayName, textOriginal, likeCount);
+
+            icon.style.backgroundColor = assignColor();
+            
+            itemIdArr[counter] = assignColor();
+            console.log(itemIdArr[counter]);
+            //only use colors of a certain color opacity
+            //maybe learn map and map a random color to each unique id, and if an id is already in the map, then use the same color
 
             username.innerHTML = authorDisplayName;
             text.innerHTML = textOriginal;
             likeNum.innerHTML = likeCount;    
 
-            let likeNumClone = likeNum.cloneNode(true);
-            likes.appendChild(likeNumClone);
             let iconClone = icon.cloneNode(true);
             card.appendChild(iconClone);
             let usernameClone = username.cloneNode(true);
             card.appendChild(usernameClone);
-            let textClone = text.cloneNode(true);
-            card.appendChild(textClone);
+            let likeNumClone = likeNum.cloneNode(true);
+            likes.appendChild(likeNumClone);
+            let textClone = text.cloneNode(true);        
+            content.appendChild(textClone);
             let likesClone = likes.cloneNode(true);
-            card.appendChild(likesClone);
+            content.appendChild(likesClone)
+            let contentClone = content.cloneNode(true);
+            card.appendChild(contentClone);
             let cardClone = card.cloneNode(true);
             document.body.appendChild(cardClone);
 
             likes.removeChild(likeNumClone);
-            card.removeChild(likesClone);
-            card.removeChild(textClone);
+            content.removeChild(textClone);
+            content.removeChild(likesClone);
+            card.removeChild(contentClone);
             card.removeChild(usernameClone);
             card.removeChild(iconClone);
+
+            counter++;
         };
     },
     search: function () {
@@ -117,6 +139,26 @@ const getCommentId = (videoLink) => {
         }
     }
     return commentId;
+}
+
+const getItemId = (id) => {
+    let itemId = '';
+    let itemIdCounter = 0;
+    const itemIdLength = 22;
+    for (let i = 0; i < id.length; i++) {
+        if ( i === 27)  {// 27 is the position where the itemId starts
+            while (itemIdCounter < itemIdLength) {
+                itemId += id[i + itemIdCounter];
+                itemIdCounter++;
+            }
+        }
+    }
+    return itemId;
+}
+
+const assignColor = () => {
+    const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+    return randomColor;
 }
 
 document.querySelector(".search button").addEventListener("click", () => {
