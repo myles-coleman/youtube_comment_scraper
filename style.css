@@ -1,11 +1,13 @@
 html { 
-    background: url("./images/Teletubby_and_Cow.jpg") no-repeat center center fixed; 
+    background: rgb(255, 255, 255); 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
 }
-
+/*
+url("./images/Teletubby_and_Cow.jpg") no-repeat center center fixed 
+*/
 body {
     display: flex;
     flex-direction: column;
